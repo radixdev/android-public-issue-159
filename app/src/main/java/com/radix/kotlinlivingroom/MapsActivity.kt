@@ -1,6 +1,8 @@
 package com.radix.kotlinlivingroom
 
 import android.os.Bundle
+import android.os.Debug
+import android.os.SystemClock
 import android.widget.Button
 import androidx.appcompat.app.AppCompatActivity
 import com.appboy.Appboy
@@ -10,6 +12,7 @@ import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.CircleOptions
 import com.google.android.gms.maps.model.LatLng
+import java.io.File
 
 class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
     private lateinit var mMap: GoogleMap
@@ -21,6 +24,10 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
         val mapFragment = supportFragmentManager
             .findFragmentById(R.id.map) as SupportMapFragment
         mapFragment.getMapAsync(this)
+
+        // Create our heap dump directory
+        PARENT_DIR = File(cacheDir, "braze_heaps")
+        PARENT_DIR.mkdirs()
 
         findViewById<Button>(R.id.logEventButton).setOnClickListener {
             performAction(
@@ -58,6 +65,9 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
     }
 
     private fun performAction(action: String?) {
+        PARENT_DIR.mkdirs()
+        Debug.dumpHprofData(File(PARENT_DIR, "${action}_baseline.hprof").path)
+
         when (action) {
             LOG_CUSTOM_EVENT -> {
                 Appboy.getInstance(this).logCustomEvent("Logged Event")
@@ -66,11 +76,18 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
                 Appboy.getInstance(this).currentUser?.setCustomUserAttribute("Cool Factor", 15.0)
             }
         }
+
+        // Wait for things to settle and collect a post heap dump
+        Thread(Runnable {
+            SystemClock.sleep(2000)
+            Debug.dumpHprofData(File(PARENT_DIR, "${action}_post.hprof").path)
+        }).start()
     }
 
     companion object {
         val LOG_CUSTOM_EVENT = "customEvent"
         val LOG_ATTRIBUTE = "customAttribute"
+        lateinit var PARENT_DIR: File
     }
 
 }
