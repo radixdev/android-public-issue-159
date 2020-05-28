@@ -65,7 +65,6 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
     }
 
     private fun performAction(action: String?) {
-        PARENT_DIR.mkdirs()
         Debug.dumpHprofData(File(PARENT_DIR, "${action}_baseline.hprof").path)
 
         when (action) {
