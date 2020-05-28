@@ -1,17 +1,17 @@
 package com.radix.kotlinlivingroom
 
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-
+import android.widget.Button
+import androidx.appcompat.app.AppCompatActivity
+import com.appboy.Appboy
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.SupportMapFragment
+import com.google.android.gms.maps.model.CircleOptions
 import com.google.android.gms.maps.model.LatLng
-import com.google.android.gms.maps.model.MarkerOptions
 
 class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
-
     private lateinit var mMap: GoogleMap
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -21,6 +21,17 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
         val mapFragment = supportFragmentManager
             .findFragmentById(R.id.map) as SupportMapFragment
         mapFragment.getMapAsync(this)
+
+        findViewById<Button>(R.id.logEventButton).setOnClickListener {
+            performAction(
+                LOG_CUSTOM_EVENT
+            )
+        }
+        findViewById<Button>(R.id.logAttributeButton).setOnClickListener {
+            performAction(
+                LOG_ATTRIBUTE
+            )
+        }
     }
 
     /**
@@ -35,9 +46,31 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
     override fun onMapReady(googleMap: GoogleMap) {
         mMap = googleMap
 
-        // Add a marker in Sydney and move the camera
-        val sydney = LatLng(-34.0, 151.0)
-        mMap.addMarker(MarkerOptions().position(sydney).title("Marker in Sydney"))
-        mMap.moveCamera(CameraUpdateFactory.newLatLng(sydney))
+        val nyc = LatLng(40.801921, -73.961172)
+        mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(nyc, 13f))
+
+        // Add our marker points
+        mMap.addCircle(
+            CircleOptions()
+                .center(nyc)
+                .radius(500.0)
+        )
     }
+
+    private fun performAction(action: String?) {
+        when (action) {
+            LOG_CUSTOM_EVENT -> {
+                Appboy.getInstance(this).logCustomEvent("Logged Event")
+            }
+            LOG_ATTRIBUTE -> {
+                Appboy.getInstance(this).currentUser?.setCustomUserAttribute("Cool Factor", 15.0)
+            }
+        }
+    }
+
+    companion object {
+        val LOG_CUSTOM_EVENT = "customEvent"
+        val LOG_ATTRIBUTE = "customAttribute"
+    }
+
 }

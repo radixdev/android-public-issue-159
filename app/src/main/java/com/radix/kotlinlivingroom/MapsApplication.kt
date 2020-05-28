@@ -3,11 +3,10 @@ package com.radix.kotlinlivingroom
 import android.app.Application
 import android.util.Log
 import com.appboy.Appboy
-import com.appboy.AppboyLifecycleCallbackListener
 import com.appboy.configuration.AppboyConfig
 import com.appboy.support.AppboyLogger
-import com.google.firebase.remoteconfig.FirebaseRemoteConfigSettings
 import com.google.firebase.remoteconfig.FirebaseRemoteConfig
+import com.google.firebase.remoteconfig.FirebaseRemoteConfigSettings
 
 class SinkApplication : Application() {
 
@@ -22,7 +21,7 @@ class SinkApplication : Application() {
             .setFirebaseCloudMessagingSenderIdKey("901477453852")
             .build()
         Appboy.configure(this, config)
-        registerActivityLifecycleCallbacks(AppboyLifecycleCallbackListener())
+//        registerActivityLifecycleCallbacks(AppboyLifecycleCallbackListener())
 
         var mFirebaseRemoteConfig = FirebaseRemoteConfig.getInstance()
         val configSettings = FirebaseRemoteConfigSettings.Builder()
