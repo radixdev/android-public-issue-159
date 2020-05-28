@@ -15,7 +15,7 @@ class SinkApplication : Application() {
 
         AppboyLogger.setLogLevel(Log.VERBOSE)
         val config = AppboyConfig.Builder()
-            .setApiKey("1d502a81-f92f-48d4-96a7-1cbafc42b425")
+            .setApiKey("da8f263e-1483-4e9f-ac0c-7b40030c8f40")
             .setCustomEndpoint("sondheim.appboy.com")
             .setIsFirebaseCloudMessagingRegistrationEnabled(true)
             .setFirebaseCloudMessagingSenderIdKey("901477453852")

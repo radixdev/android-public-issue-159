@@ -7,6 +7,7 @@ import android.view.View
 import android.widget.Button
 import androidx.appcompat.app.AppCompatActivity
 import com.appboy.Appboy
+import com.appboy.events.ContentCardsUpdatedEvent
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
@@ -30,6 +31,13 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback, View.OnClickListen
         // Create our heap dump directory
         PARENT_DIR = File(cacheDir, "braze_heaps")
         PARENT_DIR.mkdirs()
+
+        findViewById<Button>(R.id.bLogEvent).setOnClickListener(this)
+        findViewById<Button>(R.id.bLogAttribute).setOnClickListener(this)
+        findViewById<Button>(R.id.bGetInstance).setOnClickListener(this)
+        findViewById<Button>(R.id.bChangeUser).setOnClickListener(this)
+        findViewById<Button>(R.id.bOpenSession).setOnClickListener(this)
+        findViewById<Button>(R.id.bGetContentCards).setOnClickListener(this)
     }
 
     /**
@@ -79,11 +87,17 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback, View.OnClickListen
             R.id.bOpenSession -> {
                 Appboy.getInstance(this).openSession(this)
             }
+            R.id.bGetContentCards -> {
+                Appboy.getInstance(this).subscribeToContentCardsUpdates { contentCardsUpdatedEvent: ContentCardsUpdatedEvent? ->
+
+                }
+                Appboy.getInstance(this).requestContentCardsRefresh(false)
+            }
         }
 
         // Wait for things to settle and collect a post heap dump
         Thread(Runnable {
-            SystemClock.sleep(2000)
+            SystemClock.sleep(5000)
             Debug.dumpHprofData(File(PARENT_DIR, "${action}_post.hprof").path)
         }).start()
     }

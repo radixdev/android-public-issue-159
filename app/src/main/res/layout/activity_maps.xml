@@ -39,6 +39,11 @@
                 android:id="@+id/bOpenSession"
                 style="@style/Button"
                 android:text="OpenSession" />
+
+            <Button
+                android:id="@+id/bGetContentCards"
+                style="@style/Button"
+                android:text="ContentCards" />
         </TableRow>
 
 
