@@ -4,37 +4,45 @@
     android:layout_height="match_parent"
     android:orientation="vertical">
 
-    <LinearLayout
+    <TableLayout
         android:id="@+id/buttonLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
-        <Button
-            android:id="@+id/bLogEvent"
-            style="@style/Button"
-            android:text="Event" />
+        <TableRow>
 
-        <Button
-            android:id="@+id/bLogAttribute"
-            style="@style/Button"
-            android:text="Attribute" />
+            <Button
+                android:id="@+id/bLogEvent"
+                style="@style/Button"
+                android:text="Event" />
 
-        <Button
-            android:id="@+id/bGetInstance"
-            style="@style/Button"
-            android:text="GetInstance" />
+            <Button
+                android:id="@+id/bLogAttribute"
+                style="@style/Button"
+                android:text="Attribute" />
 
-        <Button
-            android:id="@+id/bChangeUser"
-            style="@style/Button"
-            android:text="ChangeUser" />
+            <Button
+                android:id="@+id/bGetInstance"
+                style="@style/Button"
+                android:text="GetInstance" />
+        </TableRow>
 
-        <Button
-            android:id="@+id/bOpenSession"
-            style="@style/Button"
-            android:text="OpenSession" />
 
-    </LinearLayout>
+        <TableRow>
+
+            <Button
+                android:id="@+id/bChangeUser"
+                style="@style/Button"
+                android:text="ChangeUser" />
+
+            <Button
+                android:id="@+id/bOpenSession"
+                style="@style/Button"
+                android:text="OpenSession" />
+        </TableRow>
+
+
+    </TableLayout>
 
 
     <fragment xmlns:tools="http://schemas.android.com/tools"
