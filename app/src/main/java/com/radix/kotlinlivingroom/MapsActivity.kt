@@ -3,6 +3,7 @@ package com.radix.kotlinlivingroom
 import android.os.Bundle
 import android.os.Debug
 import android.os.SystemClock
+import android.view.View
 import android.widget.Button
 import androidx.appcompat.app.AppCompatActivity
 import com.appboy.Appboy
@@ -13,8 +14,9 @@ import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.CircleOptions
 import com.google.android.gms.maps.model.LatLng
 import java.io.File
+import java.util.*
 
-class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
+class MapsActivity : AppCompatActivity(), OnMapReadyCallback, View.OnClickListener {
     private lateinit var mMap: GoogleMap
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -28,17 +30,6 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
         // Create our heap dump directory
         PARENT_DIR = File(cacheDir, "braze_heaps")
         PARENT_DIR.mkdirs()
-
-        findViewById<Button>(R.id.logEventButton).setOnClickListener {
-            performAction(
-                LOG_CUSTOM_EVENT
-            )
-        }
-        findViewById<Button>(R.id.logAttributeButton).setOnClickListener {
-            performAction(
-                LOG_ATTRIBUTE
-            )
-        }
     }
 
     /**
@@ -64,15 +55,29 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
         )
     }
 
-    private fun performAction(action: String?) {
+    override fun onClick(v: View?) {
+        if (v !is Button) {
+            return
+        }
+        val action = v.text
+
         Debug.dumpHprofData(File(PARENT_DIR, "${action}_baseline.hprof").path)
 
-        when (action) {
-            LOG_CUSTOM_EVENT -> {
+        when (v.id) {
+            R.id.bLogEvent -> {
                 Appboy.getInstance(this).logCustomEvent("Logged Event")
             }
-            LOG_ATTRIBUTE -> {
+            R.id.bLogAttribute -> {
                 Appboy.getInstance(this).currentUser?.setCustomUserAttribute("Cool Factor", 15.0)
+            }
+            R.id.bGetInstance -> {
+                Appboy.getInstance(this)
+            }
+            R.id.bChangeUser -> {
+                Appboy.getInstance(this).changeUser(UUID.randomUUID().toString())
+            }
+            R.id.bOpenSession -> {
+                Appboy.getInstance(this).openSession(this)
             }
         }
 
@@ -84,8 +89,6 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
     }
 
     companion object {
-        val LOG_CUSTOM_EVENT = "customEvent"
-        val LOG_ATTRIBUTE = "customAttribute"
         lateinit var PARENT_DIR: File
     }
 
